@@ -13,8 +13,7 @@ export class ProxyService {
 
   private getEnv(key: string): string {
     const value = this.config.get<string>(key);
-    if (!value)
-      throw new InternalServerErrorException(`${key} is not defined in config`);
+    if (!value) throw new InternalServerErrorException(`${key} is not defined in config`);
     return value;
   }
 

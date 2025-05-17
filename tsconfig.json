@@ -17,19 +17,13 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "allowJs": true,
     "paths": {
-      "@app/common": [
-        "libs/common/src"
-      ],
-      "@app/common/*": [
-        "libs/common/src/*"
-      ],
-      "@app/config": [
-        "libs/config/src"
-      ],
-      "@app/config/*": [
-        "libs/config/src/*"
-      ]
+      "@app/common": ["libs/common/src"],
+      "@app/common/*": ["libs/common/src/*"],
+      "@app/config": ["libs/config/src"],
+      "@app/config/*": ["libs/config/src/*"]
     }
-  }
+  },
+  "include": ["apps/**/*", "libs/**/*", ".eslintrc.js", "**/*.js", ".prettierrc.js"]
 }
