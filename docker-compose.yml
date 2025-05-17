@@ -1,0 +1,80 @@
+version: '3.9'
+
+services:
+  # ─────────────── MongoDB ───────────────
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - nx_net
+    # 개발 중에 DataGrip 등 외부 툴로 접속할 때만 해제
+    ports:
+      - '27017:27017'
+
+  # ─────────────── Auth MS ───────────────
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+      args:
+        SERVICE: auth
+    env_file:
+      - apps/auth/.env
+    depends_on:
+      - mongo
+    networks:
+      - nx_net
+    # 디버깅용으로 auth 서비스 직접 보고 싶으면 해제
+    ports:
+      - '3001:3000'
+
+  # ────────────── Event MS ──────────────
+  event:
+    build:
+      context: .
+      dockerfile: apps/event/Dockerfile
+      args:
+        SERVICE: event
+    env_file:
+      - apps/event/.env
+    depends_on:
+      - mongo
+    networks:
+      - nx_net
+    # 디버깅용으로 event 서비스 직접 보고 싶으면 해제
+    ports:
+      - '3002:3000'
+
+  # ───────────── Gateway MS ─────────────
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+      args:
+        SERVICE: gateway
+    env_file:
+      - apps/gateway/.env
+    depends_on:
+      - auth
+      - event
+    networks:
+      - nx_net
+
+    # 개발용: Gateway만 외부 3000번 포트로 노출
+    ports:
+      - '3000:3000'
+
+    # 제출용: 외부 포트 차단 후 제ㅐ출하기
+
+networks:
+  nx_net:
+    driver: bridge
+
+volumes:
+  mongo-data:

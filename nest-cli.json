@@ -1,14 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/nexon-reward-yooseungmo/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/nexon-reward-yooseungmo/tsconfig.app.json"
+    "webpackConfigPath": "webpack.config.js"
   },
   "monorepo": true,
-  "root": "apps/nexon-reward-yooseungmo",
   "projects": {
     "auth": {
       "type": "application",
@@ -28,15 +26,6 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
-    "config": {
-      "type": "library",
-      "root": "libs/config",
-      "entryFile": "index",
-      "sourceRoot": "libs/config/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/config/tsconfig.lib.json"
-      }
-    },
     "event": {
       "type": "application",
       "root": "apps/event",
@@ -53,15 +42,6 @@
       "sourceRoot": "apps/gateway/src",
       "compilerOptions": {
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
-      }
-    },
-    "nexon-reward-yooseungmo": {
-      "type": "application",
-      "root": "apps/nexon-reward-yooseungmo",
-      "entryFile": "main",
-      "sourceRoot": "apps/nexon-reward-yooseungmo/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/nexon-reward-yooseungmo/tsconfig.app.json"
       }
     }
   }
