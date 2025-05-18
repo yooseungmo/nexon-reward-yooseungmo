@@ -67,6 +67,7 @@ module.exports = {
           'apps/**/*.spec.{ts,js}',
           'apps/**/*.e2e-spec.{ts,js}',
           'apps/gateway/src/proxy/**/*.ts',
+          'apps/libs/common/**/*.ts',
         ],
         packageDir: ['.'],
       },

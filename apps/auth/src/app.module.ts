@@ -15,9 +15,10 @@ import * as Joi from 'joi';
         MONGODB_DB: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRES_IN: Joi.string().default('3600s'),
+        REFRESH_TOKEN_SECRET: Joi.string().required(),
+        REFRESH_TOKEN_EXPIRES_IN: Joi.string().default('7d'),
       }),
     }),
-
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
