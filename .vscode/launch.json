@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "configurations": [
+    /* ──────────────── EVENT MS ──────────────── */
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug ‣ Event",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug:event", "--", "--inspect-brk"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "restart": true,
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+
+    /* ──────────────── AUTH  MS ──────────────── */
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug ‣ Auth",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug:auth", "--", "--inspect-brk"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "restart": true,
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+
+    /* ─────────────── GATEWAY MS ─────────────── */
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug ‣ Gateway",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug:gateway", "--", "--inspect-brk"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "restart": true,
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+
+  /* 여러 서비스를 한 번에 attach 하고 싶을 때 */
+  "compounds": [
+    {
+      "name": "Debug ‣ ALL (Event + Auth + Gateway)",
+      "configurations": ["Debug ‣ Event", "Debug ‣ Auth", "Debug ‣ Gateway"]
+    }
+  ]
+}

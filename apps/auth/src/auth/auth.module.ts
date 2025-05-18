@@ -10,7 +10,6 @@ import { UserMongoRepository } from 'apps/auth/src/auth/user.mongo.repository';
 
 @Module({
   imports: [
-    // PassportModule.register({ defaultStrategy: 'jwt' }), // ← 추가
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],

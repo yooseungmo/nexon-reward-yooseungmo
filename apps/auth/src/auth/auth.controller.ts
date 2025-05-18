@@ -26,7 +26,7 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  @ApiOperation({ summary: '회원가입' })
+  @ApiOperation({ summary: '회원가입', description: 'Roles = [USER, OPERATOR, AUDITOR, ADMIN]' })
   @ApiBody({ type: ApiAuthPostSignupRequestDto })
   @ApiResponse({ status: 201, type: ApiAuthPostSignupResponseDto })
   async signup(@Body() dto: ApiAuthPostSignupRequestDto): Promise<ApiAuthPostSignupResponseDto> {
@@ -62,7 +62,10 @@ export class AuthController {
 
   @Get('users')
   @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '유저 목록 조회 [이름 검색 + 페이지네이션]' })
+  @ApiOperation({
+    summary: '유저 목록 조회 [이름 검색 + 페이지네이션]',
+    description: 'OPERATOR 권한 필요',
+  })
   @ApiResponse({ status: 200, type: ApiAuthGetUsersResponseDto })
   async getAllUsers(
     @Query() query: ApiAuthGetUsersQueryRequestDto,
@@ -72,7 +75,7 @@ export class AuthController {
 
   @Get('users/:id')
   @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '유저 상세 조회' })
+  @ApiOperation({ summary: '유저 상세 조회', description: 'OPERATOR 권한 필요' })
   @ApiResponse({ status: 200, type: ApiAuthGetUserDetailResponseDto })
   async getUserDetail(@Param('id') id: string): Promise<ApiAuthGetUserDetailResponseDto> {
     return this.authService.getUserDetail(id);
@@ -80,7 +83,7 @@ export class AuthController {
 
   @Patch('users/:id/role')
   @Rbac(Role.ADMIN)
-  @ApiOperation({ summary: '유저 역할 변경' })
+  @ApiOperation({ summary: '유저 역할 변경', description: 'ADMIN 권한 필요' })
   @ApiBody({ type: ApiAuthPatchUserRoleRequestDto })
   @ApiResponse({ status: 200, type: ApiAuthPatchUserRoleResponseDto })
   async updateRole(

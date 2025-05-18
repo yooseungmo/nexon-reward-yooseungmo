@@ -1,12 +1,48 @@
-import { Controller, Get } from '@nestjs/common';
+import { CurrentUser, JwtAuthGuard, Rbac, RbacGuard, Role, UserDto } from '@app/common';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ApiEventPostRequestDto } from 'apps/event/src/event/dto/api-event-post-request.dto';
+import { ApiEventPostResponseDto } from 'apps/event/src/event/dto/api-event-post-response.dto';
+import { ApiEventPostRewardRequestDto } from 'apps/event/src/event/dto/api-event-post-reward-request.dto';
+import { ApiEventPostRewardResponseDto } from 'apps/event/src/event/dto/api-event-post-reward-response.dto';
 import { EventService } from 'apps/event/src/event/event.service';
 
-@Controller()
+@ApiTags('Event')
+@Controller('events')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard, RbacGuard)
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Get()
-  getHello(): string {
-    return this.eventService.getHello();
+  @Post()
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({
+    summary: '이벤트 생성',
+    description: 'OPERATOR 권한 필요',
+  })
+  @ApiBody({ type: ApiEventPostRequestDto })
+  @ApiResponse({ status: 201, type: ApiEventPostResponseDto })
+  async createEvent(@Body() dto: ApiEventPostRequestDto, @CurrentUser() user: UserDto) {
+    return this.eventService.createEvent(dto, user);
+  }
+
+  @Post(':id/reward')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({
+    summary: '보상 등록 및 이벤트 활성화',
+    description: 'OPERATOR 권한 필요',
+  })
+  @ApiParam({ name: 'id', description: 'Event ID' })
+  @ApiBody({ type: ApiEventPostRewardRequestDto })
+  @ApiResponse({ status: 201, type: ApiEventPostRewardResponseDto })
+  addReward(@Param('id') id: string, @Body() dto: ApiEventPostRewardRequestDto) {
+    return this.eventService.addReward(id, dto);
   }
 }
