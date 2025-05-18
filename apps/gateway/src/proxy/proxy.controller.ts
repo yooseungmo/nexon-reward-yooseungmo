@@ -1,9 +1,8 @@
+import { JwtAuthGuard, Public } from '@app/common';
 import { All, Body, Controller, HttpCode, Query, Req, UseGuards } from '@nestjs/common';
+import { RolesGuard } from 'apps/gateway/src/auth/roles.guard';
+import { Roles } from 'apps/gateway/src/decorators/roles.decorator';
 import { Request } from 'express';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { Public } from '../decorators/public.decorator';
-import { Roles } from '../decorators/roles.decorator';
 import { ProxyService } from './proxy.service';
 
 @Controller()

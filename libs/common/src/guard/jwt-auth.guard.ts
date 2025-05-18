@@ -1,8 +1,7 @@
-// apps/gateway/src/auth/jwt-auth.guard.ts
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { IS_PUBLIC_KEY } from '@app/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator'; // 메타데이터 키!
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -21,5 +20,21 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
     return super.canActivate(context);
+  }
+
+  handleRequest(err: any, user: any, info: Error) {
+    if (err) {
+      // JWT 전략 내부 에러
+      throw err;
+    }
+    if (info) {
+      // 토큰 만료/형식 오류 등
+      throw new UnauthorizedException(info.message);
+    }
+    if (!user) {
+      // 토큰이 없거나 검증에 실패한 경우
+      throw new UnauthorizedException('인증 토큰이 필요합니다');
+    }
+    return user;
   }
 }

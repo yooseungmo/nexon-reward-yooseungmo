@@ -1,6 +1,6 @@
+import { IS_PUBLIC_KEY } from '@app/common';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from 'apps/gateway/src/decorators/public.decorator';
 import { ROLES_KEY } from 'apps/gateway/src/decorators/roles.decorator';
 
 @Injectable()

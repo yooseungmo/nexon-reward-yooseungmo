@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   # ─────────────── MongoDB ───────────────
   mongo:
@@ -46,7 +44,7 @@ services:
       - nx_net
     # 디버깅용으로 event 서비스 직접 보고 싶으면 해제
     # ports:
-    #   - '3002:3000'
+    #   - '3002:3002'
 
   # ───────────── Gateway MS ─────────────
   gateway:

@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
+import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
 import { UserDocument } from 'apps/auth/src/auth/schemas/user.schema';
@@ -109,5 +111,19 @@ export class AuthService {
     await this.repository.removeRefreshToken(user.id);
 
     return { success: true };
+  }
+
+  async getAllUsers(query: ApiAuthGetUsersQueryRequestDto): Promise<ApiAuthGetUsersResponseDto> {
+    const { items, total } = await this.repository.findPaginated(query);
+
+    return plainToInstance(
+      ApiAuthGetUsersResponseDto,
+      {
+        items,
+        total,
+        query,
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 }

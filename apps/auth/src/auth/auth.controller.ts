@@ -1,8 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard, Rbac, RbacGuard, Role } from '@app/common';
+import { Public } from '@app/common/decorator/public.decorator';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
+import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
-import { Public } from 'apps/gateway/src/decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { ApiAuthPostLoginRequestDto } from './dto/api-auth-post-login-request.dto';
 import { ApiAuthPostLoginResponseDto } from './dto/api-auth-post-login-response.dto';
@@ -13,6 +16,8 @@ import { ApiAuthPostSignupResponseDto } from './dto/api-auth-post-signup-respons
 
 @ApiTags('Auth')
 @Controller('auth')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard, RbacGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -50,5 +55,15 @@ export class AuthController {
   @ApiResponse({ status: 200, type: ApiAuthPostLogoutResponseDto })
   async logout(@Body() dto: ApiAuthPostLogoutRequestDto): Promise<ApiAuthPostLogoutResponseDto> {
     return this.authService.logout(dto);
+  }
+
+  @Get('users')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({ summary: '유저 목록 조회 [이름 검색 + 페이지네이션]' })
+  @ApiResponse({ status: 200, type: ApiAuthGetUsersResponseDto })
+  async getAllUsers(
+    @Query() query: ApiAuthGetUsersQueryRequestDto,
+  ): Promise<ApiAuthGetUsersResponseDto> {
+    return this.authService.getAllUsers(query);
   }
 }

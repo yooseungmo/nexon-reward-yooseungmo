@@ -1,11 +1,11 @@
+import { JwtAuthGuard } from '@app/common';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from 'apps/gateway/src/auth/roles.guard';
 import * as Joi from 'joi';
 import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { RolesGuard } from './auth/roles.guard';
 import { ProxyModule } from './proxy/proxy.module';
 
 @Module({

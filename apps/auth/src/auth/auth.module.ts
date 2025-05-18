@@ -1,3 +1,4 @@
+import { JwtStrategy } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -9,6 +10,7 @@ import { UserMongoRepository } from 'apps/auth/src/auth/user.mongo.repository';
 
 @Module({
   imports: [
+    // PassportModule.register({ defaultStrategy: 'jwt' }), // ← 추가
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -20,6 +22,6 @@ import { UserMongoRepository } from 'apps/auth/src/auth/user.mongo.repository';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserMongoRepository],
+  providers: [AuthService, UserMongoRepository, JwtStrategy],
 })
 export class AuthModule {}
