@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
 import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
 import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
+import { ApiAuthPatchRoleRequestDto } from 'apps/auth/src/auth/dto/api-auth-patch-role-request.dto';
+import { ApiAuthPatchRoleResponseDto } from 'apps/auth/src/auth/dto/api-auth-patch-role-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
 import { AuthUsersDto } from 'apps/auth/src/auth/dto/auth-users-dto';
@@ -135,5 +137,19 @@ export class AuthService {
     return plainToInstance(ApiAuthGetUserDetailResponseDto, user, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async updateRole(
+    id: string,
+    dto: ApiAuthPatchRoleRequestDto,
+  ): Promise<ApiAuthPatchRoleResponseDto> {
+    const existUser = await this.repository.findById(id);
+    if (isEmpty(existUser)) {
+      throw new NotFoundException('User not found');
+    }
+
+    const user = await this.repository.updateRole(id, dto.role);
+
+    return plainToInstance(ApiAuthPatchRoleResponseDto, user, { excludeExtraneousValues: true });
   }
 }

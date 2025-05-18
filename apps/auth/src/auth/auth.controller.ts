@@ -1,10 +1,12 @@
 import { JwtAuthGuard, Rbac, RbacGuard, Role } from '@app/common';
 import { Public } from '@app/common/decorator/public.decorator';
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
 import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
 import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
+import { ApiAuthPatchRoleRequestDto } from 'apps/auth/src/auth/dto/api-auth-patch-role-request.dto';
+import { ApiAuthPatchRoleResponseDto } from 'apps/auth/src/auth/dto/api-auth-patch-role-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
 import { AuthService } from './auth.service';
@@ -74,5 +76,17 @@ export class AuthController {
   @ApiResponse({ status: 200, type: ApiAuthGetUserDetailResponseDto })
   async getUserDetail(@Param('id') id: string): Promise<ApiAuthGetUserDetailResponseDto> {
     return this.authService.getUserDetail(id);
+  }
+
+  @Patch('user/:id/role')
+  @Rbac(Role.ADMIN)
+  @ApiOperation({ summary: '유저 역할 변경' })
+  @ApiBody({ type: ApiAuthPatchRoleRequestDto })
+  @ApiResponse({ status: 200, type: ApiAuthPatchRoleResponseDto })
+  async updateRole(
+    @Param('id') id: string,
+    @Body() dto: ApiAuthPatchRoleRequestDto,
+  ): Promise<ApiAuthPatchRoleResponseDto> {
+    return this.authService.updateRole(id, dto);
   }
 }

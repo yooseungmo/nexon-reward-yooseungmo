@@ -19,7 +19,7 @@ export class ApiAuthGetUsersQueryRequestDto {
   @Transform(({ value }) => (value ? Number(value) : 10))
   limit: number;
 
-  @ApiPropertyOptional({ example: 'blanc', description: '유저명 부분 검색' })
+  @ApiPropertyOptional({ description: '유저명 부분 검색' })
   @IsOptional()
   @IsString()
   name?: string;

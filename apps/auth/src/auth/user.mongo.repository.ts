@@ -1,3 +1,4 @@
+import { Role } from '@app/common';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
@@ -49,5 +50,13 @@ export class UserMongoRepository {
       this.userModel.countDocuments(filter).exec(),
     ]);
     return { items, total };
+  }
+
+  async updateRole(id: string, role: Role): Promise<UserDocument> {
+    const user = await this.userModel
+      .findByIdAndUpdate(id, { roles: [role] }, { new: true, runValidators: true })
+      .exec();
+
+    return user!;
   }
 }
