@@ -7,11 +7,15 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
+import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
 import { UserDocument } from 'apps/auth/src/auth/schemas/user.schema';
 import { UserMongoRepository } from 'apps/auth/src/auth/user.mongo.repository';
 import { plainToInstance } from 'class-transformer';
 import { ApiAuthPostLoginRequestDto } from './dto/api-auth-post-login-request.dto';
 import { ApiAuthPostLoginResponseDto } from './dto/api-auth-post-login-response.dto';
+import { ApiAuthPostLogoutRequestDto } from './dto/api-auth-post-logout-request.dto';
+import { ApiAuthPostLogoutResponseDto } from './dto/api-auth-post-logout-response.dto';
 import { ApiAuthPostSignupRequestDto } from './dto/api-auth-post-signup-request.dto';
 import { ApiAuthPostSignupResponseDto } from './dto/api-auth-post-signup-response.dto';
 
@@ -68,5 +72,42 @@ export class AuthService {
 
     return { accessToken, refreshToken };
   }
+
+  async refresh(dto: ApiAuthPostRefreshRequestDto): Promise<ApiAuthPostRefreshResponseDto> {
+    const user = await this.repository.findByRefreshToken(dto.refreshToken);
+    if (isEmpty(user)) throw new UnauthorizedException('Invalid refresh token');
+    try {
+      const decoded = this.jwtService.verify(dto.refreshToken, {
+        secret: this.refreshSecret,
+      });
+
+      const payload = {
+        sub: decoded.sub,
+        roles: decoded.roles,
+      };
+
+      const [accessToken, newRefreshToken] = await Promise.all([
+        this.jwtService.signAsync(payload),
+        this.jwtService.signAsync(payload, {
+          secret: this.refreshSecret,
+          expiresIn: this.refreshExpire,
+        }),
+      ]);
+
+      await this.repository.setRefreshToken(user.id, newRefreshToken);
+
+      return { accessToken, refreshToken: newRefreshToken };
+    } catch {
+      throw new UnauthorizedException('Refresh token expired or invalid');
+    }
+  }
+
+  async logout(dto: ApiAuthPostLogoutRequestDto): Promise<ApiAuthPostLogoutResponseDto> {
+    const user = await this.repository.findByRefreshToken(dto.refreshToken);
+    if (isEmpty(user)) throw new UnauthorizedException('Invalid refresh token');
+
+    await this.repository.removeRefreshToken(user.id);
+
+    return { success: true };
   }
 }

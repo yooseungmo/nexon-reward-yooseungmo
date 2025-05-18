@@ -18,6 +18,19 @@ export class UserMongoRepository {
     return this.userModel.findOne({ email }).exec();
   }
 
+  async findByRefreshToken(token: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ refreshToken: token }).exec();
+  }
+
   async setRefreshToken(id: string, token: string): Promise<void> {
     await this.userModel.findByIdAndUpdate(id, { refreshToken: token }).exec();
   }
+
+  async removeRefreshToken(id: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(id, { refreshToken: null }).exec();
+  }
+
+  async findById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id).exec();
+  }
+}
