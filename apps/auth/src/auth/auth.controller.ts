@@ -2,6 +2,7 @@ import { JwtAuthGuard, Rbac, RbacGuard, Role } from '@app/common';
 import { Public } from '@app/common/decorator/public.decorator';
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
 import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
 import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
@@ -65,5 +66,13 @@ export class AuthController {
     @Query() query: ApiAuthGetUsersQueryRequestDto,
   ): Promise<ApiAuthGetUsersResponseDto> {
     return this.authService.getAllUsers(query);
+  }
+
+  @Get('user/:id')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({ summary: '유저 상세 조회' })
+  @ApiResponse({ status: 200, type: ApiAuthGetUserDetailResponseDto })
+  async getUserDetail(@Param('id') id: string): Promise<ApiAuthGetUserDetailResponseDto> {
+    return this.authService.getUserDetail(id);
   }
 }

@@ -3,10 +3,12 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
 import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
 import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
@@ -124,5 +126,14 @@ export class AuthService {
       total,
     });
   }
+
+  async getUserDetail(id: string): Promise<ApiAuthGetUserDetailResponseDto> {
+    const user = await this.repository.findById(id);
+    if (isEmpty(user)) {
+      throw new NotFoundException('User not found');
+    }
+    return plainToInstance(ApiAuthGetUserDetailResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 }
