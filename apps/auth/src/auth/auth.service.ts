@@ -11,6 +11,7 @@ import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-
 import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
+import { AuthUsersDto } from 'apps/auth/src/auth/dto/auth-users-dto';
 import { UserDocument } from 'apps/auth/src/auth/schemas/user.schema';
 import { UserMongoRepository } from 'apps/auth/src/auth/user.mongo.repository';
 import { plainToInstance } from 'class-transformer';
@@ -116,14 +117,12 @@ export class AuthService {
   async getAllUsers(query: ApiAuthGetUsersQueryRequestDto): Promise<ApiAuthGetUsersResponseDto> {
     const { items, total } = await this.repository.findPaginated(query);
 
-    return plainToInstance(
-      ApiAuthGetUsersResponseDto,
-      {
-        items,
-        total,
-        query,
-      },
-      { excludeExtraneousValues: true },
-    );
+    const dtoItems = plainToInstance(AuthUsersDto, items, { excludeExtraneousValues: true });
+
+    return new ApiAuthGetUsersResponseDto({
+      items: dtoItems,
+      total,
+    });
+  }
   }
 }
