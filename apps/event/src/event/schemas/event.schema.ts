@@ -23,14 +23,12 @@ export class Event extends Document {
   description?: string;
 
   @Prop({
-    type: [
-      {
-        missionType: { type: String, enum: Object.values(MissionType) },
-        threshold: Number,
-        _id: false,
-      },
-    ],
-    default: [],
+    type: {
+      missionType: { type: String, enum: Object.values(MissionType), required: true },
+      threshold: { type: Number, required: true, min: 1 },
+    },
+    _id: false,
+    required: true,
   })
   missionTask: MissionTask;
 

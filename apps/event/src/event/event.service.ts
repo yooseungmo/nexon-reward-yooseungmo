@@ -1,12 +1,21 @@
 import { isEmpty, isNotEmpty, Role, UserDto } from '@app/common';
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { EventStatus } from 'apps/event/src/constants/event-status';
 import { RewardType } from 'apps/event/src/constants/reward-type';
 import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
 import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
+import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
+import { MissionService } from 'apps/event/src/event/mission/mission.service';
 import { EventRepository } from 'apps/event/src/event/repositories/event.repository';
+import { RewardReceiveRepository } from 'apps/event/src/event/repositories/reward-receive.repository';
 import { RewardRepository } from 'apps/event/src/event/repositories/reward.repository';
 import { plainToInstance } from 'class-transformer';
 import { Types } from 'mongoose';
@@ -20,6 +29,8 @@ export class EventService {
   constructor(
     private readonly eventRepository: EventRepository,
     private readonly rewardRepository: RewardRepository,
+    private readonly missionService: MissionService,
+    private readonly rewardReceiveRepository: RewardReceiveRepository,
   ) {}
 
   async createEvent(dto: ApiEventPostRequestDto, user: UserDto): Promise<ApiEventPostResponseDto> {
@@ -85,5 +96,46 @@ export class EventService {
     return plainToInstance(ApiEventGetDetailResponseDto, eventWithReward, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async receiveReward(userId: string, eventId: string): Promise<ApiEventPostReceiveResponseDto> {
+    // 1) 이벤트 조회 및 상태 확인
+    const event = await this.eventRepository.findById(eventId);
+    if (isEmpty(event)) {
+      throw new ForbiddenException('이벤트가 존재하지 않습니다.');
+    }
+    if (event.status !== EventStatus.ACTIVE) {
+      throw new ForbiddenException('이벤트가 활성 상태가 아닙니다');
+    }
+
+    // 2) 보상 조회
+    const reward = await this.rewardRepository.existsByEventId(eventId);
+    if (isEmpty(reward)) {
+      throw new NotFoundException('보상이 존재하지 않습니다');
+    }
+
+    try {
+      // 3) 중복 요청 방지
+      if (await this.rewardReceiveRepository.existsSuccess(userId, eventId)) {
+        throw new ConflictException('이미 보상을 받았습니다.');
+      }
+
+      // 4) 미션 검증 및 SUCCESS 레코드 생성
+      const userRewardReceive = await this.missionService.completeMission(userId, event, reward.id);
+
+      // 5) DTO 변환 및 반환
+      return plainToInstance(ApiEventPostReceiveResponseDto, userRewardReceive, {
+        excludeExtraneousValues: true,
+      });
+    } catch (err) {
+      // 6) 미션 검증 실패(Forbidden)나 SUCCESS 중복 요청(Conflict) 모두 FAILURE로 기록
+      await this.rewardReceiveRepository.failure({
+        userId,
+        eventId,
+        rewardId: reward.id,
+      });
+
+      throw err;
+    }
   }
 }

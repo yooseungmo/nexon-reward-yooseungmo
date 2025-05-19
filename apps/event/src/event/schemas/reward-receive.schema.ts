@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { RewardRequestStatus } from 'apps/event/src/constants/reward-request-status';
+import { RewardReceiveStatus } from 'apps/event/src/constants/reward-receive-status';
 import { Reward } from 'apps/event/src/event/schemas/reward.schema';
 import { Document, Types } from 'mongoose';
 import { Event } from './event.schema';
 
 @Schema({ timestamps: true })
-export class RewardRequest extends Document {
+export class RewardReceive extends Document {
   @Prop({ type: Types.ObjectId, required: true })
   userId: Types.ObjectId;
 
@@ -17,23 +17,23 @@ export class RewardRequest extends Document {
 
   @Prop({
     type: String,
-    enum: Object.values(RewardRequestStatus),
+    enum: Object.values(RewardReceiveStatus),
     required: true,
-    default: RewardRequestStatus.SUCCESS,
+    default: RewardReceiveStatus.SUCCESS,
   })
-  status: RewardRequestStatus;
+  status: RewardReceiveStatus;
 }
 
-export type RewardRequestDocument = RewardRequest & Document;
-export const RewardRequestSchema = SchemaFactory.createForClass(RewardRequest);
+export type RewardReceiveDocument = RewardReceive & Document;
+export const RewardReceiveSchema = SchemaFactory.createForClass(RewardReceive);
 
 // 한 유저가 같은 rewardId 로 성공 요청은 한 번만
-RewardRequestSchema.index(
+RewardReceiveSchema.index(
   { userId: 1, rewardId: 1 },
   {
     unique: true,
-    partialFilterExpression: { status: RewardRequestStatus.SUCCESS },
+    partialFilterExpression: { status: RewardReceiveStatus.SUCCESS },
   },
 );
 
-RewardRequestSchema.index({ status: 1, createdAt: 1 });
+RewardReceiveSchema.index({ status: 1, createdAt: 1 });

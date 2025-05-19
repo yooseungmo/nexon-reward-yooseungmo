@@ -1,4 +1,4 @@
-export enum RewardRequestStatus {
+export enum RewardReceiveStatus {
   SUCCESS = 'SUCCESS',
   FAILURE = 'FAILURE',
 }

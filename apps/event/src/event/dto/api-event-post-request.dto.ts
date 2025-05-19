@@ -3,16 +3,16 @@ import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-vali
 import { MissionType } from '../../constants/mission-type.enum';
 
 export class ApiEventPostRequestDto {
-  @ApiProperty({ example: '연속 출석 이벤트' })
+  @ApiProperty({ example: '링크 공유 3회 완료' })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: '매일 로그인만 해도 100포인트 지급', required: false })
+  @ApiProperty({ example: '미션 달성 시 100포인트 지급', required: false })
   @IsString()
   description?: string;
 
-  @ApiProperty({ enum: MissionType, example: MissionType.LOGIN_DAY })
+  @ApiProperty({ enum: MissionType, example: MissionType.SOCIAL_SHARE })
   @IsEnum(MissionType)
   missionType: MissionType;
 
