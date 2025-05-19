@@ -2,6 +2,10 @@ import { isEmpty, isNotEmpty, Role, UserDto } from '@app/common';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { EventStatus } from 'apps/event/src/constants/event-status';
 import { RewardType } from 'apps/event/src/constants/reward-type';
+import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
+import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
+import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
+import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
 import { EventRepository } from 'apps/event/src/event/repositories/event.repository';
 import { RewardRepository } from 'apps/event/src/event/repositories/reward.repository';
 import { plainToInstance } from 'class-transformer';
@@ -53,10 +57,32 @@ export class EventService {
       amount: dto.amount,
     });
 
-    // 보상 추가 후 이벤트 상태 active 처리
     await this.eventRepository.updateStatus(eventId, EventStatus.ACTIVE);
 
     return plainToInstance(ApiEventPostRewardResponseDto, reward, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getEvents(query: ApiEventGetListQueryRequestDto): Promise<ApiEventGetListResponseDto> {
+    const { items, total } = await this.eventRepository.findPaginated(query);
+    const dtoItems = plainToInstance(EventListItemDto, items, {
+      excludeExtraneousValues: true,
+    });
+    return new ApiEventGetListResponseDto({
+      items: dtoItems,
+      total,
+    });
+  }
+
+  async getEventDetail(id: string): Promise<ApiEventGetDetailResponseDto> {
+    const event = await this.eventRepository.findById(id);
+    if (isEmpty(event)) throw new BadRequestException('이벤트를 찾을 수 없습니다.');
+
+    const reward = await this.rewardRepository.existsByEventId(id);
+
+    const eventWithReward = { ...event.toObject(), reward };
+    return plainToInstance(ApiEventGetDetailResponseDto, eventWithReward, {
       excludeExtraneousValues: true,
     });
   }

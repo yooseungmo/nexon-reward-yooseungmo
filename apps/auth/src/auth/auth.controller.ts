@@ -63,7 +63,7 @@ export class AuthController {
   @Get('users')
   @Rbac(Role.OPERATOR)
   @ApiOperation({
-    summary: '유저 목록 조회 [이름 검색 + 페이지네이션]',
+    summary: '유저 목록 조회 [이름 필터 + 페이지네이션]',
     description: 'OPERATOR 권한 필요',
   })
   @ApiResponse({ status: 200, type: ApiAuthGetUsersResponseDto })
