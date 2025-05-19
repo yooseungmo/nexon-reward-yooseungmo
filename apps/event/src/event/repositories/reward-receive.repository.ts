@@ -5,7 +5,7 @@ import {
   RewardReceive,
   RewardReceiveDocument,
 } from 'apps/event/src/event/schemas/reward-receive.schema';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 
 @Injectable()
 export class RewardReceiveRepository {
@@ -57,5 +57,35 @@ export class RewardReceiveRepository {
     } catch (e) {
       throw new ConflictException(e.message);
     }
+  }
+
+  async findPaginated(params: {
+    userId?: string;
+    eventId?: string;
+    status?: RewardReceiveStatus;
+    page: number;
+    limit: number;
+  }): Promise<{ items: RewardReceiveDocument[]; total: number }> {
+    const { userId, eventId, status, page, limit } = params;
+
+    const skip = (page - 1) * limit;
+    const filter: FilterQuery<RewardReceiveDocument> = {};
+    if (userId) filter.userId = userId;
+    if (eventId) filter.eventId = eventId;
+    if (status) filter.status = status;
+
+    const [items, total] = await Promise.all([
+      this.model
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('eventId')
+        .populate('rewardId')
+        .exec(),
+      this.model.countDocuments(filter).exec(),
+    ]);
+
+    return { items, total };
   }
 }

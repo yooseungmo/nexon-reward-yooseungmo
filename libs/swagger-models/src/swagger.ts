@@ -8,9 +8,12 @@ import { ApiAuthPostSignupResponseDto } from 'apps/auth/src/auth/dto/api-auth-po
 import { AuthUsersDto } from 'apps/auth/src/auth/dto/auth-users-dto';
 import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
+import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { ApiEventPostResponseDto } from 'apps/event/src/event/dto/api-event-post-response.dto';
 import { ApiEventPostRewardResponseDto } from 'apps/event/src/event/dto/api-event-post-reward-response.dto';
 import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
+import { ApiReceiveGetListResponseDto } from 'apps/event/src/event/receive/dto/api-receive-get-list-response.dto';
+import { ReceiveItemDto } from 'apps/event/src/event/receive/dto/receive-item.dto';
 
 export const SwaggerModels = [
   ApiAuthGetUserDetailResponseDto,
@@ -26,4 +29,7 @@ export const SwaggerModels = [
   ApiEventGetDetailResponseDto,
   ApiEventGetListResponseDto,
   EventListItemDto,
+  ApiReceiveGetListResponseDto,
+  ReceiveItemDto,
+  ApiEventPostReceiveResponseDto,
 ];

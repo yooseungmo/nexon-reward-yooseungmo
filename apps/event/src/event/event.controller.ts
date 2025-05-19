@@ -52,7 +52,10 @@ export class EventController {
 
   @Get()
   @Rbac(Role.USER)
-  @ApiOperation({ summary: '이벤트 목록 조회 [이름/상태 필터 + 페이지네이션]' })
+  @ApiOperation({
+    summary: '이벤트 목록 조회 [이름/상태 필터 + 페이지네이션]',
+    description: 'USER 권한 필요',
+  })
   @ApiResponse({ status: 200, type: ApiEventGetListResponseDto })
   getEvents(@Query() query: ApiEventGetListQueryRequestDto): Promise<ApiEventGetListResponseDto> {
     return this.eventService.getEvents(query);
@@ -60,7 +63,7 @@ export class EventController {
 
   @Get(':id')
   @Rbac(Role.USER)
-  @ApiOperation({ summary: '이벤트 상세 조회' })
+  @ApiOperation({ summary: '이벤트 상세 조회', description: 'USER 권한 필요' })
   @ApiResponse({ status: 200, type: ApiEventGetDetailResponseDto })
   getEventDetail(@Param('id') id: string): Promise<ApiEventGetDetailResponseDto> {
     return this.eventService.getEventDetail(id);
@@ -68,7 +71,7 @@ export class EventController {
 
   @Post(':id/receive')
   @Rbac(Role.USER)
-  @ApiOperation({ summary: '유저 보상 요청' })
+  @ApiOperation({ summary: '유저 보상 요청', description: 'USER 권한 필요' })
   @ApiParam({ name: 'id', description: 'Event ID' })
   @ApiResponse({ status: 201, type: ApiEventPostReceiveResponseDto })
   async receiveReward(

@@ -14,6 +14,7 @@ import {
 
 import { MissionService } from 'apps/event/src/event/mission/mission.service';
 import { FriendInviteStrategy } from 'apps/event/src/event/mission/strategy/friend-invite.strategy';
+import { ReceiveModule } from 'apps/event/src/event/receive/receive.module';
 import { EventRepository } from 'apps/event/src/event/repositories/event.repository';
 import { RewardReceiveRepository } from 'apps/event/src/event/repositories/reward-receive.repository';
 import { RewardRepository } from 'apps/event/src/event/repositories/reward.repository';
@@ -45,6 +46,7 @@ import { Reward, RewardSchema } from './schemas/reward.schema';
         signOptions: { expiresIn: cs.get<string>('JWT_EXPIRES_IN') },
       }),
     }),
+    ReceiveModule,
   ],
   controllers: [EventController],
   providers: [
