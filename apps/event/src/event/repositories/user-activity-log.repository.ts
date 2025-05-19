@@ -21,4 +21,8 @@ export class UserActivityLogRepository {
     ]);
     return result[0]?.total ?? 0;
   }
+
+  async create(userId: string, type: MissionType, value: number): Promise<UserActivityLogDocument> {
+    return this.model.create({ userId, type, value });
+  }
 }

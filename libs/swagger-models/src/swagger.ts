@@ -13,6 +13,7 @@ import { ApiEventPatchRewardResponseDto } from 'apps/event/src/event/dto/api-eve
 import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { ApiEventPostResponseDto } from 'apps/event/src/event/dto/api-event-post-response.dto';
 import { ApiEventPostRewardResponseDto } from 'apps/event/src/event/dto/api-event-post-reward-response.dto';
+import { ApiTestActivityLogResponseDto } from 'apps/event/src/event/dto/api-test-activity-log-response.dto';
 import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
 import { ApiReceiveGetListResponseDto } from 'apps/event/src/event/receive/dto/api-receive-get-list-response.dto';
 import { ReceiveItemDto } from 'apps/event/src/event/receive/dto/receive-item.dto';
@@ -36,4 +37,5 @@ export const SwaggerModels = [
   ApiEventPostReceiveResponseDto,
   ApiEventPatchResponseDto,
   ApiEventPatchRewardResponseDto,
+  ApiTestActivityLogResponseDto,
 ];

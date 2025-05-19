@@ -23,6 +23,7 @@ import {
   RewardReceive,
   RewardReceiveSchema,
 } from 'apps/event/src/event/schemas/reward-receive.schema';
+import { TestActivityLogsController } from 'apps/event/src/event/test-activity-logs.controller';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
 import { Event, EventSchema } from './schemas/event.schema';
@@ -48,7 +49,7 @@ import { Reward, RewardSchema } from './schemas/reward.schema';
     }),
     ReceiveModule,
   ],
-  controllers: [EventController],
+  controllers: [EventController, TestActivityLogsController],
   providers: [
     EventService,
     MissionService,
