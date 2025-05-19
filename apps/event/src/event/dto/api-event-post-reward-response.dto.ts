@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RewardType } from 'apps/event/src/constants/reward-type';
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class ApiEventPostRewardResponseDto {
   @Expose()
@@ -8,7 +8,6 @@ export class ApiEventPostRewardResponseDto {
   id: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.eventId.toString())
   @ApiProperty({ example: '60f6c0d7b1234c001c9d4e5f' })
   eventId: string;
 
@@ -17,7 +16,7 @@ export class ApiEventPostRewardResponseDto {
   type: RewardType;
 
   @Expose()
-  @ApiProperty({ example: '가입 보너스', required: false })
+  @ApiProperty({ example: '메이플 포인트', required: false })
   name?: string;
 
   @Expose()

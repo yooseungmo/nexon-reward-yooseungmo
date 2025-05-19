@@ -17,6 +17,9 @@ export class Reward extends Document {
 
   @Prop({ required: true, min: 1 })
   amount: number;
+
+  @Prop({ type: Date, default: null })
+  archivedAt?: Date;
 }
 
 export type RewardDocument = Reward & Document;
@@ -24,3 +27,4 @@ export const RewardSchema = SchemaFactory.createForClass(Reward);
 
 // 이벤트별 보상 타입 중복 방지
 RewardSchema.index({ eventId: 1, type: 1 }, { unique: true });
+RewardSchema.index({ archivedAt: 1 });

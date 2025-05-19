@@ -24,6 +24,8 @@ import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-eve
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
 import { ApiEventPatchRequestDto } from 'apps/event/src/event/dto/api-event-patch-request.dto';
 import { ApiEventPatchResponseDto } from 'apps/event/src/event/dto/api-event-patch-response.dto';
+import { ApiEventPatchRewardRequestDto } from 'apps/event/src/event/dto/api-event-patch-reward-request.dto';
+import { ApiEventPatchRewardResponseDto } from 'apps/event/src/event/dto/api-event-patch-reward-response.dto';
 import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { ApiEventPostRequestDto } from 'apps/event/src/event/dto/api-event-post-request.dto';
 import { ApiEventPostResponseDto } from 'apps/event/src/event/dto/api-event-post-response.dto';
@@ -115,5 +117,28 @@ export class EventController {
   @HttpCode(204)
   async deleteEvent(@Param('id') id: string): Promise<void> {
     return this.eventService.deleteEvent(id);
+  }
+
+  @Patch('reward/:id')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({ summary: '보상 수정 ', description: 'OPERATOR 권한 필요' })
+  @ApiParam({ name: 'id', description: 'Reward ID' })
+  @ApiBody({ type: ApiEventPatchRewardRequestDto })
+  @ApiResponse({ status: 200, type: ApiEventPatchRewardResponseDto })
+  async updateReward(
+    @Param('id') id: string,
+    @Body() dto: ApiEventPatchRewardRequestDto,
+  ): Promise<ApiEventPatchRewardResponseDto> {
+    return this.eventService.updateReward(id, dto);
+  }
+
+  @Delete('reward/:id')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({ summary: '보상 삭제 ', description: 'OPERATOR 권한 필요' })
+  @ApiParam({ name: 'id', description: 'Reward ID' })
+  @ApiResponse({ status: 204, description: 'Deleted' })
+  @HttpCode(204)
+  async deleteReward(@Param('id') id: string): Promise<void> {
+    return this.eventService.deleteReward(id);
   }
 }

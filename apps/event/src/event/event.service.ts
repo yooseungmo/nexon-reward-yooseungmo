@@ -12,6 +12,8 @@ import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-eve
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
 import { ApiEventPatchRequestDto } from 'apps/event/src/event/dto/api-event-patch-request.dto';
 import { ApiEventPatchResponseDto } from 'apps/event/src/event/dto/api-event-patch-response.dto';
+import { ApiEventPatchRewardRequestDto } from 'apps/event/src/event/dto/api-event-patch-reward-request.dto';
+import { ApiEventPatchRewardResponseDto } from 'apps/event/src/event/dto/api-event-patch-reward-response.dto';
 import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
 import { MissionService } from 'apps/event/src/event/mission/mission.service';
@@ -172,5 +174,40 @@ export class EventService {
     }
 
     await this.eventRepository.delete(id);
+  }
+
+  async updateReward(
+    id: string,
+    dto: ApiEventPatchRewardRequestDto,
+  ): Promise<ApiEventPatchRewardResponseDto> {
+    const existing = await this.rewardRepository.findById(id);
+    if (isEmpty(existing)) {
+      throw new NotFoundException('수정할 보상이 존재하지 않습니다.');
+    }
+
+    if (isNotEmpty(dto.name)) existing.name = dto.name;
+    if (isNotEmpty(dto.type)) existing.type = dto.type;
+    if (isNotEmpty(dto.amount)) existing.amount = dto.amount;
+
+    const updated = await this.rewardRepository.update(id, existing);
+
+    return plainToInstance(
+      ApiEventPatchRewardResponseDto,
+      { ...updated, result: 'SUCCESS' },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+  }
+
+  async deleteReward(id: string): Promise<void> {
+    const existing = await this.rewardRepository.findById(id);
+    if (isEmpty(existing)) {
+      throw new NotFoundException('삭제할 보상이 존재하지 않습니다.');
+    }
+
+    await this.rewardRepository.delete(id);
+
+    await this.eventRepository.updateStatus(existing.eventId.toString(), EventStatus.INACTIVE);
   }
 }
