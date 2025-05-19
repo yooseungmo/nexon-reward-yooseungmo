@@ -22,6 +22,7 @@ import {
 import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
 import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
+import { ApiEventGetProgressResponseDto } from 'apps/event/src/event/dto/api-event-get-progress-response..dto';
 import { ApiEventPatchRequestDto } from 'apps/event/src/event/dto/api-event-patch-request.dto';
 import { ApiEventPatchResponseDto } from 'apps/event/src/event/dto/api-event-patch-response.dto';
 import { ApiEventPatchRewardRequestDto } from 'apps/event/src/event/dto/api-event-patch-reward-request.dto';
@@ -32,13 +33,17 @@ import { ApiEventPostResponseDto } from 'apps/event/src/event/dto/api-event-post
 import { ApiEventPostRewardRequestDto } from 'apps/event/src/event/dto/api-event-post-reward-request.dto';
 import { ApiEventPostRewardResponseDto } from 'apps/event/src/event/dto/api-event-post-reward-response.dto';
 import { EventService } from 'apps/event/src/event/event.service';
+import { MissionService } from 'apps/event/src/event/mission/mission.service';
 
 @ApiTags('Event')
 @Controller('events')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly missionService: MissionService,
+  ) {}
 
   @Post()
   @Rbac(Role.OPERATOR)
@@ -140,5 +145,13 @@ export class EventController {
   @HttpCode(204)
   async deleteReward(@Param('id') id: string): Promise<void> {
     return this.eventService.deleteReward(id);
+  }
+
+  @Get('progress/all')
+  @Rbac(Role.USER)
+  @ApiOperation({ summary: '유저 미션 진행도 일괄 조회 (모든 활성 이벤트)' })
+  @ApiResponse({ status: 200, type: ApiEventGetProgressResponseDto })
+  async getProgress(@CurrentUser() user: UserDto) {
+    return this.missionService.getAllProgress(user.userId);
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { EventStatus } from 'apps/event/src/constants/event-status';
 import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
 import { Event, EventDocument } from 'apps/event/src/event/schemas/event.schema';
 import { FilterQuery, Model, Types } from 'mongoose';
@@ -54,6 +55,13 @@ export class EventRepository {
         { _id: new Types.ObjectId(id), archivedAt: null },
         { archivedAt: new Date() },
       )
+      .exec();
+  }
+
+  async findActive(): Promise<Pick<EventDocument, 'id' | 'name' | 'missionTask'>[]> {
+    return this.model
+      .find({ archivedAt: null, status: EventStatus.ACTIVE })
+      .select({ name: 1, missionTask: 1 })
       .exec();
   }
 }

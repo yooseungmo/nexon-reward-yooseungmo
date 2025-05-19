@@ -23,6 +23,6 @@ export class UserActivityLogRepository {
   }
 
   async create(userId: string, type: MissionType, value: number): Promise<UserActivityLogDocument> {
-    return this.model.create({ userId, type, value });
+    return this.model.create({ userId: new Types.ObjectId(userId), type, value });
   }
 }
