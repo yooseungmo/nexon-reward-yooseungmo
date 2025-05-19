@@ -1,21 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
-import { FilterQuery, Model } from 'mongoose';
-import { Event, EventDocument } from '../schemas/event.schema';
+import { Event, EventDocument } from 'apps/event/src/event/schemas/event.schema';
+import { FilterQuery, Model, Types } from 'mongoose';
 
 @Injectable()
 export class EventRepository {
   constructor(@InjectModel(Event.name) private readonly model: Model<EventDocument>) {}
 
   async create(data: Partial<Event>): Promise<EventDocument> {
-    const created = await this.model.create(data);
-    return created;
+    return this.model.create(data);
   }
 
   async findById(id: string): Promise<EventDocument | null> {
-    const event = await this.model.findById(id).exec();
-    return event;
+    return this.model.findOne({ _id: new Types.ObjectId(id), archivedAt: null }).exec();
   }
 
   async updateStatus(id: string, status: Event['status']): Promise<void> {
@@ -26,9 +24,8 @@ export class EventRepository {
     query: ApiEventGetListQueryRequestDto,
   ): Promise<{ items: EventDocument[]; total: number }> {
     const { page, limit, name, status } = query;
-
     const skip = (page - 1) * limit;
-    const filter: FilterQuery<EventDocument> = {};
+    const filter: FilterQuery<EventDocument> = { archivedAt: null };
     if (name) filter.name = { $regex: name, $options: 'i' };
     if (status) filter.status = status;
 
@@ -37,5 +34,26 @@ export class EventRepository {
       this.model.countDocuments(filter).exec(),
     ]);
     return { items, total };
+  }
+
+  async update(id: string, updateData: Partial<Record<string, any>>): Promise<EventDocument> {
+    return this.model
+      .findOneAndUpdate(
+        { _id: new Types.ObjectId(id), archivedAt: null },
+        { $set: updateData },
+        { new: true },
+      )
+      .orFail()
+      .exec();
+  }
+
+  /** Soft delete: archivedAt에 현재 시간 기록 */
+  async delete(id: string): Promise<void> {
+    await this.model
+      .findOneAndUpdate(
+        { _id: new Types.ObjectId(id), archivedAt: null },
+        { archivedAt: new Date() },
+      )
+      .exec();
   }
 }

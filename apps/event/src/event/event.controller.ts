@@ -1,5 +1,16 @@
 import { CurrentUser, JwtAuthGuard, Rbac, RbacGuard, Role, UserDto } from '@app/common';
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -11,6 +22,8 @@ import {
 import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
 import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
+import { ApiEventPatchRequestDto } from 'apps/event/src/event/dto/api-event-patch-request.dto';
+import { ApiEventPatchResponseDto } from 'apps/event/src/event/dto/api-event-patch-response.dto';
 import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { ApiEventPostRequestDto } from 'apps/event/src/event/dto/api-event-post-request.dto';
 import { ApiEventPostResponseDto } from 'apps/event/src/event/dto/api-event-post-response.dto';
@@ -53,7 +66,7 @@ export class EventController {
   @Get()
   @Rbac(Role.USER)
   @ApiOperation({
-    summary: '이벤트 목록 조회 [이름/상태 필터 + 페이지네이션]',
+    summary: '이벤트 목록 조회',
     description: 'USER 권한 필요',
   })
   @ApiResponse({ status: 200, type: ApiEventGetListResponseDto })
@@ -79,5 +92,28 @@ export class EventController {
     @CurrentUser() user: UserDto,
   ): Promise<ApiEventPostReceiveResponseDto> {
     return this.eventService.receiveReward(user.userId, eventId);
+  }
+
+  @Patch(':id')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({ summary: '이벤트 수정', description: 'OPERATOR 권한 필요' })
+  @ApiParam({ name: 'id', description: 'Event ID' })
+  @ApiBody({ type: ApiEventPatchRequestDto })
+  @ApiResponse({ status: 200, type: ApiEventPatchResponseDto })
+  async updateEvent(
+    @Param('id') id: string,
+    @Body() dto: ApiEventPatchRequestDto,
+  ): Promise<ApiEventPatchResponseDto> {
+    return this.eventService.updateEvent(id, dto);
+  }
+
+  @Delete(':id')
+  @Rbac(Role.OPERATOR)
+  @ApiOperation({ summary: '이벤트 삭제', description: 'OPERATOR 권한 필요' })
+  @ApiParam({ name: 'id', description: 'Event ID' })
+  @ApiResponse({ status: 204, description: 'Deleted' })
+  @HttpCode(204)
+  async deleteEvent(@Param('id') id: string): Promise<void> {
+    return this.eventService.deleteEvent(id);
   }
 }

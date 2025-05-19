@@ -1,6 +1,5 @@
 import { isEmpty, isNotEmpty, Role, UserDto } from '@app/common';
 import {
-  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -11,6 +10,8 @@ import { RewardType } from 'apps/event/src/constants/reward-type';
 import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
 import { ApiEventGetListQueryRequestDto } from 'apps/event/src/event/dto/api-event-get-list-query-request.dto';
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
+import { ApiEventPatchRequestDto } from 'apps/event/src/event/dto/api-event-patch-request.dto';
+import { ApiEventPatchResponseDto } from 'apps/event/src/event/dto/api-event-patch-response.dto';
 import { ApiEventPostReceiveResponseDto } from 'apps/event/src/event/dto/api-event-post-receive-response.dto';
 import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
 import { MissionService } from 'apps/event/src/event/mission/mission.service';
@@ -54,7 +55,7 @@ export class EventService {
     dto: ApiEventPostRewardRequestDto,
   ): Promise<ApiEventPostRewardResponseDto> {
     const event = await this.eventRepository.findById(eventId);
-    if (isEmpty(event)) throw new BadRequestException('이벤트를 찾을 수 없습니다.');
+    if (isEmpty(event)) throw new NotFoundException('이벤트를 찾을 수 없습니다.');
 
     const existReward = await this.rewardRepository.existsByEventId(eventId);
     if (isNotEmpty(existReward)) {
@@ -88,7 +89,7 @@ export class EventService {
 
   async getEventDetail(id: string): Promise<ApiEventGetDetailResponseDto> {
     const event = await this.eventRepository.findById(id);
-    if (isEmpty(event)) throw new BadRequestException('이벤트를 찾을 수 없습니다.');
+    if (isEmpty(event)) throw new NotFoundException('이벤트를 찾을 수 없습니다.');
 
     const reward = await this.rewardRepository.existsByEventId(id);
 
@@ -102,7 +103,7 @@ export class EventService {
     // 1) 이벤트 조회 및 상태 확인
     const event = await this.eventRepository.findById(eventId);
     if (isEmpty(event)) {
-      throw new ForbiddenException('이벤트가 존재하지 않습니다.');
+      throw new NotFoundException('이벤트가 존재하지 않습니다.');
     }
     if (event.status !== EventStatus.ACTIVE) {
       throw new ForbiddenException('이벤트가 활성 상태가 아닙니다');
@@ -137,5 +138,39 @@ export class EventService {
 
       throw err;
     }
+  }
+
+  async updateEvent(id: string, dto: ApiEventPatchRequestDto): Promise<ApiEventPatchResponseDto> {
+    const existing = await this.eventRepository.findById(id);
+    if (isEmpty(existing)) {
+      throw new NotFoundException('수정할 이벤트가 존재하지 않습니다.');
+    }
+
+    if (isNotEmpty(dto.name)) existing.name = dto.name;
+    if (isNotEmpty(dto.description)) existing.description = dto.description;
+    if (isNotEmpty(dto.missionType)) existing['missionTask.missionType'] = dto.missionType;
+    if (isNotEmpty(dto.threshold)) existing['missionTask.threshold'] = dto.threshold;
+    if (isNotEmpty(dto.startAt)) existing.startAt = new Date(dto.startAt);
+    if (isNotEmpty(dto.endAt)) existing.endAt = new Date(dto.endAt);
+    if (isNotEmpty(dto.status)) existing.status = dto.status;
+
+    const updated = await this.eventRepository.update(id, existing);
+
+    return plainToInstance(
+      ApiEventPatchResponseDto,
+      { ...updated, result: 'SUCCESS' },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+  }
+
+  async deleteEvent(id: string): Promise<void> {
+    const existing = await this.eventRepository.findById(id);
+    if (isEmpty(existing)) {
+      throw new NotFoundException('삭제할 이벤트가 존재하지 않습니다.');
+    }
+
+    await this.eventRepository.delete(id);
   }
 }

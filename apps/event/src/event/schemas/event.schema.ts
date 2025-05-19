@@ -50,11 +50,14 @@ export class Event extends Document {
     required: true,
   })
   createdBy: CreatedByMeta;
+
+  @Prop({ type: Date, default: null })
+  archivedAt?: Date;
 }
 
 export type EventDocument = Document & Event;
 
 export const EventSchema = SchemaFactory.createForClass(Event);
-
+EventSchema.index({ archivedAt: 1 });
 EventSchema.index({ startAt: 1, endAt: 1 });
 EventSchema.index({ status: 1 });
