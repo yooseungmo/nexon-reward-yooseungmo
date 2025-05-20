@@ -1,12 +1,7 @@
-import { JwtAuthGuard, Rbac, RbacGuard, Role } from '@app/common';
+import { JwtAuthGuard, RbacGuard } from '@app/common';
 import { Public } from '@app/common/decorator/public.decorator';
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
-import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
-import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
-import { ApiAuthPatchUserRoleRequestDto } from 'apps/auth/src/auth/dto/api-auth-patch-user-role-request.dto';
-import { ApiAuthPatchUserRoleResponseDto } from 'apps/auth/src/auth/dto/api-auth-patch-user-role-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
 import { AuthService } from './auth.service';
@@ -60,36 +55,34 @@ export class AuthController {
     return this.authService.logout(dto);
   }
 
-  @Get('users')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({
-    summary: '유저 목록 조회 [이름 필터 + 페이지네이션]',
-    description: 'OPERATOR 권한 필요',
-  })
-  @ApiResponse({ status: 200, type: ApiAuthGetUsersResponseDto })
-  async getAllUsers(
-    @Query() query: ApiAuthGetUsersQueryRequestDto,
-  ): Promise<ApiAuthGetUsersResponseDto> {
-    return this.authService.getAllUsers(query);
-  }
+  // @Get('users')
+  // @Rbac(Role.OPERATOR)
+  // @ApiOperation({
+  //   summary: '유저 목록 조회 [이름 필터 + 페이지네이션]',
+  //   description: 'OPERATOR 권한 필요',
+  // })
+  // @ApiResponse({ status: 200, type: ApiUserGetResponseDto })
+  // async getAllUsers(@Query() query: ApiUserGetQueryRequestDto): Promise<ApiUserGetResponseDto> {
+  //   return this.authService.getAllUsers(query);
+  // }
 
-  @Get('users/:id')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '유저 상세 조회', description: 'OPERATOR 권한 필요' })
-  @ApiResponse({ status: 200, type: ApiAuthGetUserDetailResponseDto })
-  async getUserDetail(@Param('id') id: string): Promise<ApiAuthGetUserDetailResponseDto> {
-    return this.authService.getUserDetail(id);
-  }
+  // @Get('users/:id')
+  // @Rbac(Role.OPERATOR)
+  // @ApiOperation({ summary: '유저 상세 조회', description: 'OPERATOR 권한 필요' })
+  // @ApiResponse({ status: 200, type: ApiUserGetDetailResponseDto })
+  // async getUserDetail(@Param('id') id: string): Promise<ApiUserGetDetailResponseDto> {
+  //   return this.authService.getUserDetail(id);
+  // }
 
-  @Patch('users/:id/role')
-  @Rbac(Role.ADMIN)
-  @ApiOperation({ summary: '유저 역할 변경', description: 'ADMIN 권한 필요' })
-  @ApiBody({ type: ApiAuthPatchUserRoleRequestDto })
-  @ApiResponse({ status: 200, type: ApiAuthPatchUserRoleResponseDto })
-  async updateRole(
-    @Param('id') id: string,
-    @Body() dto: ApiAuthPatchUserRoleRequestDto,
-  ): Promise<ApiAuthPatchUserRoleResponseDto> {
-    return this.authService.updateRole(id, dto);
-  }
+  // @Patch('users/:id/role')
+  // @Rbac(Role.ADMIN)
+  // @ApiOperation({ summary: '유저 역할 변경', description: 'ADMIN 권한 필요' })
+  // @ApiBody({ type: ApiUserPatchRoleRequestDto })
+  // @ApiResponse({ status: 200, type: ApiUserPatchRoleResponseDto })
+  // async updateRole(
+  //   @Param('id') id: string,
+  //   @Body() dto: ApiUserPatchRoleRequestDto,
+  // ): Promise<ApiUserPatchRoleResponseDto> {
+  //   return this.authService.updateRole(id, dto);
+  // }
 }

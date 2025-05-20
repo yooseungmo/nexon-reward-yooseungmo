@@ -2,7 +2,7 @@ import { Role } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
 
-export class ApiAuthPatchUserRoleRequestDto {
+export class ApiUserPatchRoleRequestDto {
   @ApiProperty({
     enum: Role,
     example: Role.OPERATOR,

@@ -2,7 +2,7 @@ import { Role } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class ApiAuthGetUserDetailResponseDto {
+export class ApiUserGetDetailResponseDto {
   @Expose()
   @ApiProperty({ example: '60f6c0d7b1234c001c9d4e5f' })
   id: string;

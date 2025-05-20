@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 
-export class ApiAuthGetUsersQueryRequestDto {
+export class ApiUserGetQueryRequestDto {
   @ApiPropertyOptional({ example: 1, description: '페이지 번호' })
   @IsOptional()
   @Type(() => Number)

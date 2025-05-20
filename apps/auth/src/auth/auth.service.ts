@@ -3,19 +3,12 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
-import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
-import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
-import { ApiAuthPatchUserRoleRequestDto } from 'apps/auth/src/auth/dto/api-auth-patch-user-role-request.dto';
-import { ApiAuthPatchUserRoleResponseDto } from 'apps/auth/src/auth/dto/api-auth-patch-user-role-response.dto';
 import { ApiAuthPostRefreshRequestDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-request.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
-import { AuthUsersDto } from 'apps/auth/src/auth/dto/auth-users-dto';
 import { UserDocument } from 'apps/auth/src/auth/schemas/user.schema';
 import { UserMongoRepository } from 'apps/auth/src/auth/user.mongo.repository';
 import { plainToInstance } from 'class-transformer';
@@ -118,40 +111,40 @@ export class AuthService {
     return { success: true };
   }
 
-  async getAllUsers(query: ApiAuthGetUsersQueryRequestDto): Promise<ApiAuthGetUsersResponseDto> {
-    const { items, total } = await this.repository.findPaginated(query);
+  // async getAllUsers(query: ApiUserGetQueryRequestDto): Promise<ApiUserGetResponseDto> {
+  //   const { items, total } = await this.repository.findPaginated(query);
 
-    const dtoItems = plainToInstance(AuthUsersDto, items, { excludeExtraneousValues: true });
+  //   const dtoItems = plainToInstance(UserItemsDto, items, { excludeExtraneousValues: true });
 
-    return new ApiAuthGetUsersResponseDto({
-      items: dtoItems,
-      total,
-    });
-  }
+  //   return new ApiUserGetResponseDto({
+  //     items: dtoItems,
+  //     total,
+  //   });
+  // }
 
-  async getUserDetail(id: string): Promise<ApiAuthGetUserDetailResponseDto> {
-    const user = await this.repository.findById(id);
-    if (isEmpty(user)) {
-      throw new NotFoundException('User not found');
-    }
-    return plainToInstance(ApiAuthGetUserDetailResponseDto, user, {
-      excludeExtraneousValues: true,
-    });
-  }
+  // async getUserDetail(id: string): Promise<ApiUserGetDetailResponseDto> {
+  //   const user = await this.repository.findById(id);
+  //   if (isEmpty(user)) {
+  //     throw new NotFoundException('User not found');
+  //   }
+  //   return plainToInstance(ApiUserGetDetailResponseDto, user, {
+  //     excludeExtraneousValues: true,
+  //   });
+  // }
 
-  async updateRole(
-    id: string,
-    dto: ApiAuthPatchUserRoleRequestDto,
-  ): Promise<ApiAuthPatchUserRoleResponseDto> {
-    const existUser = await this.repository.findById(id);
-    if (isEmpty(existUser)) {
-      throw new NotFoundException('User not found');
-    }
+  // async updateRole(
+  //   id: string,
+  //   dto: ApiUserPatchRoleRequestDto,
+  // ): Promise<ApiUserPatchRoleResponseDto> {
+  //   const existUser = await this.repository.findById(id);
+  //   if (isEmpty(existUser)) {
+  //     throw new NotFoundException('User not found');
+  //   }
 
-    const user = await this.repository.updateRole(id, dto.role);
+  //   const user = await this.repository.updateRole(id, dto.role);
 
-    return plainToInstance(ApiAuthPatchUserRoleResponseDto, user, {
-      excludeExtraneousValues: true,
-    });
-  }
+  //   return plainToInstance(ApiUserPatchRoleResponseDto, user, {
+  //     excludeExtraneousValues: true,
+  //   });
+  // }
 }

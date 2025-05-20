@@ -1,7 +1,7 @@
 import { Role } from '@app/common';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ApiAuthGetUsersQueryRequestDto } from 'apps/auth/src/auth/dto/api-auth-get-users-query-request.dto';
+import { ApiUserGetQueryRequestDto } from 'apps/auth/src/auth/user/dto/api-user-get-query-request.dto';
 import { Model } from 'mongoose';
 import { ApiAuthPostSignupRequestDto } from './dto/api-auth-post-signup-request.dto';
 import { User, UserDocument } from './schemas/user.schema';
@@ -36,7 +36,7 @@ export class UserMongoRepository {
     return this.userModel.findById(id).exec();
   }
 
-  async findPaginated(query: ApiAuthGetUsersQueryRequestDto): Promise<{
+  async findPaginated(query: ApiUserGetQueryRequestDto): Promise<{
     items: UserDocument[];
     total: number;
   }> {

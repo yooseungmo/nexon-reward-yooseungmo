@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AuthUsersDto } from 'apps/auth/src/auth/dto/auth-users-dto';
+import { UserItemsDto } from 'apps/auth/src/auth/user/dto/auth-users-dto';
 import { Expose } from 'class-transformer';
 
-export class ApiAuthGetUsersResponseDto {
+export class ApiUserGetResponseDto {
   @Expose()
-  @ApiProperty({ type: [AuthUsersDto] })
-  items: AuthUsersDto[];
+  @ApiProperty({ type: [UserItemsDto] })
+  items: UserItemsDto[];
 
   @Expose()
   @ApiProperty({ example: 100, description: '전체 유저 수' })
   total: number;
 
-  constructor(partial: Partial<ApiAuthGetUsersResponseDto>) {
+  constructor(partial: Partial<ApiUserGetResponseDto>) {
     Object.assign(this, partial);
   }
 }

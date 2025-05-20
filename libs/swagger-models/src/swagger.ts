@@ -1,11 +1,11 @@
-import { ApiAuthGetUserDetailResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-user-detail-response.dto';
-import { ApiAuthGetUsersResponseDto } from 'apps/auth/src/auth/dto/api-auth-get-users-response.dto';
-import { ApiAuthPatchUserRoleResponseDto } from 'apps/auth/src/auth/dto/api-auth-patch-user-role-response.dto';
 import { ApiAuthPostLoginResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-login-response.dto';
 import { ApiAuthPostLogoutResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-logout-response.dto';
 import { ApiAuthPostRefreshResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-refresh-response.dto';
 import { ApiAuthPostSignupResponseDto } from 'apps/auth/src/auth/dto/api-auth-post-signup-response.dto';
-import { AuthUsersDto } from 'apps/auth/src/auth/dto/auth-users-dto';
+import { ApiUserGetDetailResponseDto } from 'apps/auth/src/auth/user/dto/api-user-get-detail-response.dto';
+import { ApiUserGetResponseDto } from 'apps/auth/src/auth/user/dto/api-user-get-response.dto';
+import { ApiUserPatchRoleResponseDto } from 'apps/auth/src/auth/user/dto/api-user-patch-role-response.dto';
+import { UserItemsDto } from 'apps/auth/src/auth/user/dto/auth-users-dto';
 import { ApiEventGetDetailResponseDto } from 'apps/event/src/event/dto/api-event-get-detail-response.dto';
 import { ApiEventGetListResponseDto } from 'apps/event/src/event/dto/api-event-get-list-response.dto';
 import { ApiEventPatchResponseDto } from 'apps/event/src/event/dto/api-event-patch-response.dto';
@@ -19,16 +19,16 @@ import { ApiReceiveGetListResponseDto } from 'apps/event/src/event/receive/dto/a
 import { ReceiveItemDto } from 'apps/event/src/event/receive/dto/receive-item.dto';
 
 export const SwaggerModels = [
-  ApiAuthGetUserDetailResponseDto,
-  ApiAuthGetUsersResponseDto,
-  ApiAuthPatchUserRoleResponseDto,
+  ApiUserGetDetailResponseDto,
+  ApiUserGetResponseDto,
+  ApiUserPatchRoleResponseDto,
   ApiAuthPostLoginResponseDto,
   ApiAuthPostLogoutResponseDto,
   ApiAuthPostRefreshResponseDto,
   ApiAuthPostSignupResponseDto,
   ApiEventPostResponseDto,
   ApiEventPostRewardResponseDto,
-  AuthUsersDto,
+  UserItemsDto,
   ApiEventGetDetailResponseDto,
   ApiEventGetListResponseDto,
   EventListItemDto,
