@@ -53,7 +53,7 @@ cp apps/gateway/.env.example apps/gateway/.env
 ```
 PORT=3001
 MONGODB_URI=mongodb://mongo:27017
-auth
+MONGODB_DB=auth
 JWT_SECRET=nexon
 JWT_EXPIRES_IN=3600s
 REFRESH_TOKEN_SECRET=nexon
@@ -63,7 +63,7 @@ REFRESH_TOKEN_EXPIRES_IN=7d
 ```
 PORT=3002
 MONGODB_URI=mongodb://mongo:27017
-event
+MONGODB_DB=event
 JWT_SECRET=nexon
 JWT_EXPIRES_IN=3600s
 REFRESH_TOKEN_SECRET=nexon
@@ -114,6 +114,8 @@ GET    /receives?eventId=       # 전체 이력 (AUDITOR)
 POST   /test/activity-logs      # 개발용 유저 활동 로그 생성
 GET    /health                  # 헬스 체크
 ```
+### 전체 미션 진행도 일괄 조회 API
+GET    /event/progress/all      # 유저 미션 진행도 일괄 조회 API 
 
 ---
 ## 이벤트 타입
@@ -129,10 +131,10 @@ MESO_SPEND     메소 n 이상 소비
 
 ## 전략 패턴 (Strategy Pattern)
 
-AbstractMissionStrategy 추상 클래스로 미션 검증(performAction) 및 진행도 계산(performCount) 공통 로직 추상화    
-Record<MissionType, AbstractMissionStrategy> 매핑을 통해 동적 디스패치 구현    
-개방-폐쇄 원칙(OCP) 준수: 새로운 미션 타입 추가 시, 기존 코드 수정 없이 확장 가능     
-책임 분리: EventService → MissionService → Strategy 계층으로 역할 명확화    
+- AbstractMissionStrategy 추상 클래스로 미션 검증(performAction) 및 진행도 계산(performCount) 공통 로직 추상화    
+- Record<MissionType, AbstractMissionStrategy> 매핑을 통해 동적 디스패치 구현    
+- 개방-폐쇄 원칙(OCP) 준수: 새로운 미션 타입 추가 시, 기존 코드 수정 없이 확장 가능     
+- 책임 분리: EventService → MissionService → Strategy 계층으로 역할 명확화    
 
 총 5가지 전략 구현:
 
@@ -146,14 +148,14 @@ Record<MissionType, AbstractMissionStrategy> 매핑을 통해 동적 디스패�
 
 ## 추가 구현 API
 
-전체 이력 조회: GET /receives?eventId= (감사자) — 기획에는 없으나 전략 패턴으로 쉽게 구현 가능   
+유저 미션 진행도 일괄 조회: GET /event/progress/all — 기획에는 없으나 전략 패턴으로 쉽게 구현 가능   
 테스트용 로그 생성: POST /test/activity-logs — 개발 시 시드 데이터 쌓기용   
 
 ---
 ## 코딩 컨벤션
 
-Airbnb Style Guide 준수   
-모든 리스트 조회 API에 페이지네이션 및 필터링 지원   
-Swagger 문서 자동 생성 및 검증 (class-validator + ValidationPipe)   
+- Airbnb Style Guide 준수   
+- 모든 리스트 조회 API에 페이지네이션 및 필터링 지원   
+- Swagger 문서 자동 생성 및 검증 (class-validator + ValidationPipe)   
 
 ---
