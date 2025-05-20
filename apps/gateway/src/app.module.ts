@@ -1,11 +1,8 @@
-import { JwtAuthGuard } from '@app/common';
-import { HttpModule } from '@nestjs/axios';
+import { JwtAuthGuard, RbacGuard } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from 'apps/gateway/src/auth/roles.guard';
 import * as Joi from 'joi';
-import { AuthModule } from './auth/auth.module';
 import { ProxyModule } from './proxy/proxy.module';
 
 @Module({
@@ -20,13 +17,11 @@ import { ProxyModule } from './proxy/proxy.module';
         JWT_SECRET: Joi.string().required(),
       }),
     }),
-    AuthModule,
-    HttpModule,
     ProxyModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
-    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: RbacGuard },
   ],
 })
 export class AppModule {}
