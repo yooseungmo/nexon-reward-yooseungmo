@@ -54,35 +54,4 @@ export class AuthController {
   async logout(@Body() dto: ApiAuthPostLogoutRequestDto): Promise<ApiAuthPostLogoutResponseDto> {
     return this.authService.logout(dto);
   }
-
-  // @Get('users')
-  // @Rbac(Role.OPERATOR)
-  // @ApiOperation({
-  //   summary: '유저 목록 조회 [이름 필터 + 페이지네이션]',
-  //   description: 'OPERATOR 권한 필요',
-  // })
-  // @ApiResponse({ status: 200, type: ApiUserGetResponseDto })
-  // async getAllUsers(@Query() query: ApiUserGetQueryRequestDto): Promise<ApiUserGetResponseDto> {
-  //   return this.authService.getAllUsers(query);
-  // }
-
-  // @Get('users/:id')
-  // @Rbac(Role.OPERATOR)
-  // @ApiOperation({ summary: '유저 상세 조회', description: 'OPERATOR 권한 필요' })
-  // @ApiResponse({ status: 200, type: ApiUserGetDetailResponseDto })
-  // async getUserDetail(@Param('id') id: string): Promise<ApiUserGetDetailResponseDto> {
-  //   return this.authService.getUserDetail(id);
-  // }
-
-  // @Patch('users/:id/role')
-  // @Rbac(Role.ADMIN)
-  // @ApiOperation({ summary: '유저 역할 변경', description: 'ADMIN 권한 필요' })
-  // @ApiBody({ type: ApiUserPatchRoleRequestDto })
-  // @ApiResponse({ status: 200, type: ApiUserPatchRoleResponseDto })
-  // async updateRole(
-  //   @Param('id') id: string,
-  //   @Body() dto: ApiUserPatchRoleRequestDto,
-  // ): Promise<ApiUserPatchRoleResponseDto> {
-  //   return this.authService.updateRole(id, dto);
-  // }
 }

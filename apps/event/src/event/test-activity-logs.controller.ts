@@ -14,7 +14,7 @@ export class TestActivityLogsController {
   constructor(private readonly userActivityLogRepository: UserActivityLogRepository) {}
 
   @Post()
-  @Rbac(Role.USER)
+  @Rbac(Role.USER, Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
   @ApiOperation({
     summary: '개발용 유저 활동 로그 생성',
     description: 'MONSTER_KILL|PARTY_QUEST|FRIEND_INVITE|SOCIAL_SHARE|MESO_SPEND',

@@ -46,10 +46,10 @@ export class EventController {
   ) {}
 
   @Post()
-  @Rbac(Role.OPERATOR)
+  @Rbac(Role.OPERATOR, Role.ADMIN)
   @ApiOperation({
     summary: '이벤트 생성',
-    description: 'OPERATOR 권한 필요',
+    description: 'OPERATOR|ADMIN 권한 필요',
   })
   @ApiBody({ type: ApiEventPostRequestDto })
   @ApiResponse({ status: 201, type: ApiEventPostResponseDto })
@@ -58,10 +58,10 @@ export class EventController {
   }
 
   @Post(':id/reward')
-  @Rbac(Role.OPERATOR)
+  @Rbac(Role.OPERATOR, Role.ADMIN)
   @ApiOperation({
     summary: '보상 등록',
-    description: 'OPERATOR 권한 필요',
+    description: 'OPERATOR|ADMIN 권한 필요',
   })
   @ApiParam({ name: 'id', description: 'Event ID' })
   @ApiBody({ type: ApiEventPostRewardRequestDto })
@@ -71,10 +71,10 @@ export class EventController {
   }
 
   @Get()
-  @Rbac(Role.USER)
+  @Rbac(Role.USER, Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
   @ApiOperation({
     summary: '이벤트 목록 조회',
-    description: 'USER 권한 필요',
+    description: 'USER|OPERATOR|AUDITOR|ADMIN 권한 필요',
   })
   @ApiResponse({ status: 200, type: ApiEventGetListResponseDto })
   getEvents(@Query() query: ApiEventGetListQueryRequestDto): Promise<ApiEventGetListResponseDto> {
@@ -82,16 +82,19 @@ export class EventController {
   }
 
   @Get(':id')
-  @Rbac(Role.USER)
-  @ApiOperation({ summary: '이벤트 상세 조회', description: 'USER 권한 필요' })
+  @Rbac(Role.USER, Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
+  @ApiOperation({
+    summary: '이벤트 상세 조회',
+    description: 'USER|OPERATOR|AUDITOR|ADMIN 권한 필요',
+  })
   @ApiResponse({ status: 200, type: ApiEventGetDetailResponseDto })
   getEventDetail(@Param('id') id: string): Promise<ApiEventGetDetailResponseDto> {
     return this.eventService.getEventDetail(id);
   }
 
   @Post(':id/receive')
-  @Rbac(Role.USER)
-  @ApiOperation({ summary: '유저 보상 요청', description: 'USER 권한 필요' })
+  @Rbac(Role.USER, Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
+  @ApiOperation({ summary: '유저 보상 요청', description: 'USER|OPERATOR|AUDITOR|ADMIN 권한 필요' })
   @ApiParam({ name: 'id', description: 'Event ID' })
   @ApiResponse({ status: 201, type: ApiEventPostReceiveResponseDto })
   async receiveReward(
@@ -102,8 +105,8 @@ export class EventController {
   }
 
   @Patch(':id')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '이벤트 수정', description: 'OPERATOR 권한 필요' })
+  @Rbac(Role.OPERATOR, Role.ADMIN)
+  @ApiOperation({ summary: '이벤트 수정', description: 'OPERATOR|ADMIN 권한 필요' })
   @ApiParam({ name: 'id', description: 'Event ID' })
   @ApiBody({ type: ApiEventPatchRequestDto })
   @ApiResponse({ status: 200, type: ApiEventPatchResponseDto })
@@ -115,8 +118,8 @@ export class EventController {
   }
 
   @Delete(':id')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '이벤트 삭제', description: 'OPERATOR 권한 필요' })
+  @Rbac(Role.OPERATOR, Role.ADMIN)
+  @ApiOperation({ summary: '이벤트 삭제', description: 'OPERATOR|ADMIN 권한 필요' })
   @ApiParam({ name: 'id', description: 'Event ID' })
   @ApiResponse({ status: 204, description: 'Deleted' })
   @HttpCode(204)
@@ -125,8 +128,8 @@ export class EventController {
   }
 
   @Patch('reward/:id')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '보상 수정 ', description: 'OPERATOR 권한 필요' })
+  @Rbac(Role.OPERATOR, Role.ADMIN)
+  @ApiOperation({ summary: '보상 수정 ', description: 'OPERATOR|ADMIN 권한 필요' })
   @ApiParam({ name: 'id', description: 'Reward ID' })
   @ApiBody({ type: ApiEventPatchRewardRequestDto })
   @ApiResponse({ status: 200, type: ApiEventPatchRewardResponseDto })
@@ -138,8 +141,8 @@ export class EventController {
   }
 
   @Delete('reward/:id')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '보상 삭제 ', description: 'OPERATOR 권한 필요' })
+  @Rbac(Role.OPERATOR, Role.ADMIN)
+  @ApiOperation({ summary: '보상 삭제 ', description: 'OPERATOR|ADMIN 권한 필요' })
   @ApiParam({ name: 'id', description: 'Reward ID' })
   @ApiResponse({ status: 204, description: 'Deleted' })
   @HttpCode(204)
@@ -148,7 +151,7 @@ export class EventController {
   }
 
   @Get('progress/all')
-  @Rbac(Role.USER)
+  @Rbac(Role.USER, Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
   @ApiOperation({ summary: '유저 미션 진행도 일괄 조회 (모든 활성 이벤트)' })
   @ApiResponse({ status: 200, type: ApiEventGetProgressResponseDto })
   async getProgress(@CurrentUser() user: UserDto) {

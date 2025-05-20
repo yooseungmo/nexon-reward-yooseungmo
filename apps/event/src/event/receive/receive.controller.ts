@@ -13,10 +13,10 @@ export class ReceiveController {
   constructor(private readonly receiveService: ReceiveService) {}
 
   @Get('my')
-  @Rbac(Role.USER)
+  @Rbac(Role.USER, Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
   @ApiOperation({
     summary: '내 보상 이력 조회',
-    description: 'USER 권한 필요',
+    description: 'USER|OPERATOR|AUDITOR|ADMIN 권한 필요',
   })
   @ApiResponse({ status: 200, type: ApiReceiveGetListResponseDto })
   async getMyReceives(
@@ -27,10 +27,10 @@ export class ReceiveController {
   }
 
   @Get()
-  @Rbac(Role.AUDITOR)
+  @Rbac(Role.OPERATOR, Role.AUDITOR, Role.ADMIN)
   @ApiOperation({
     summary: '전체 보상 이력 조회',
-    description: 'AUDITOR 권한 필요',
+    description: 'OPERATOR|AUDITOR|ADMIN 권한 필요',
   })
   @ApiResponse({ status: 200, type: ApiReceiveGetListResponseDto })
   async getAllReceives(

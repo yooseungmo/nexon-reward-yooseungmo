@@ -16,10 +16,10 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @Rbac(Role.OPERATOR)
+  @Rbac(Role.ADMIN)
   @ApiOperation({
     summary: '유저 목록 조회',
-    description: 'OPERATOR 권한 필요',
+    description: 'ADMIN 권한 필요',
   })
   @ApiResponse({ status: 200, type: ApiUserGetResponseDto })
   async getAllUsers(@Query() query: ApiUserGetQueryRequestDto): Promise<ApiUserGetResponseDto> {
@@ -27,8 +27,11 @@ export class UserController {
   }
 
   @Get('/:id')
-  @Rbac(Role.OPERATOR)
-  @ApiOperation({ summary: '유저 상세 조회', description: 'OPERATOR 권한 필요' })
+  @Rbac(Role.ADMIN)
+  @ApiOperation({
+    summary: '유저 상세 조회',
+    description: 'ADMIN 권한 필요',
+  })
   @ApiResponse({ status: 200, type: ApiUserGetDetailResponseDto })
   async getUserDetail(@Param('id') id: string): Promise<ApiUserGetDetailResponseDto> {
     return this.userService.getUserDetail(id);

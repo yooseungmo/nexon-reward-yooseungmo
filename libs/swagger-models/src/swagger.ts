@@ -17,6 +17,11 @@ import { ApiTestActivityLogResponseDto } from 'apps/event/src/event/dto/api-test
 import { EventListItemDto } from 'apps/event/src/event/dto/event-list-item.dto';
 import { ApiReceiveGetListResponseDto } from 'apps/event/src/event/receive/dto/api-receive-get-list-response.dto';
 import { ReceiveItemDto } from 'apps/event/src/event/receive/dto/receive-item.dto';
+import { AuthProxyController } from 'apps/gateway/src/auth/auth-proxy.controller';
+import { UserProxyController } from 'apps/gateway/src/auth/user-proxy.controller';
+import { DevProxyController } from 'apps/gateway/src/event/dev-proxy.controller';
+import { EventProxyController } from 'apps/gateway/src/event/event-proxy.controller';
+import { ReceiveProxyController } from 'apps/gateway/src/event/receive-proxy.controller';
 
 export const SwaggerModels = [
   ApiUserGetDetailResponseDto,
@@ -38,4 +43,9 @@ export const SwaggerModels = [
   ApiEventPatchResponseDto,
   ApiEventPatchRewardResponseDto,
   ApiTestActivityLogResponseDto,
+  UserProxyController,
+  DevProxyController,
+  ReceiveProxyController,
+  AuthProxyController,
+  EventProxyController,
 ];
